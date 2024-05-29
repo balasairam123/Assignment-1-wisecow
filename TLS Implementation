@@ -1,0 +1,34 @@
+Generate TLS Certificates
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj "/CN=wisecow.local"
+Create a Kubernetes Secret
+kubectl create secret tls wisecow-tls --key tls.key --cert tls.crt
+
+Update Kubernetes Manifests for TLS
+
+Ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wisecow-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  tls:
+  - hosts:
+    - wisecow.local
+    secretName: wisecow-tls
+  rules:
+  - host: wisecow.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: wisecow-service
+            port:
+              number: 80
+Apply the Ingress Resource
+kubectl apply -f Ingress.yaml
+Expected output:
+ingress.networking.k8s.io/wisecow-ingress created
