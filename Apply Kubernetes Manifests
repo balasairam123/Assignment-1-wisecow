@@ -1,0 +1,5 @@
+kubectl apply -f Deployment.yaml
+kubectl apply -f Service.yaml
+Expected output:
+deployment.apps/wisecow-deployment created
+service/wisecow-service created
