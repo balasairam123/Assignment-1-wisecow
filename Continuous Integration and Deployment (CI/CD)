@@ -1,0 +1,48 @@
+reate GitHub Actions Workflow
+
+.github/workflows/ci-cd.yml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: user/wisecow:latest
+
+    - name: Deploy to Kubernetes
+      env:
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+      run: |
+        echo "${KUBE_CONFIG_DATA}" | base64 --decode > $HOME/.kube/config
+        kubectl apply -f Deployment.yaml
+        kubectl apply -f Service.yaml
+Configure GitHub Secrets
+
+DOCKERHUB_USERNAME: Your Docker Hub username
+DOCKERHUB_TOKEN: Your Docker Hub access token
+KUBE_CONFIG_DATA: Base64 encoded kubeconfig file
+Push Changes to GitHub
+Push Changes to GitHub
+git add .
+git commit -m "Add Dockerfile, Kubernetes manifests, and GitHub Actions workflow"
+git push origin main
+Expected output in GitHub Actions:
+Successfully built and pushed Docker image to Docker Hub
+Applied Kubernetes manifests successfully
+
