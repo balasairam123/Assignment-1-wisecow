@@ -1,0 +1,36 @@
+Create Kubernetes Manifest Files
+
+Deployment.yaml
+  apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wisecow-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: wisecow
+  template:
+    metadata:
+      labels:
+        app: wisecow
+          apiVersion: v1
+kind: Service
+metadata:
+  name: wisecow-service
+spec:
+  selector:
+    app: wisecow
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5000
+  type: LoadBalancer
+
+    spec:
+      containers:
+      - name: wisecow
+        image: wisecow:latest
+        ports:
+        - containerPort: 5000
+Service.yaml
